@@ -14,7 +14,7 @@
         }
         a { color: #3D6B4A; }
         header {
-            padding: 64px 24px 48px;
+            padding: 56px 24px 48px;
             text-align: center;
             max-width: 600px;
             margin: 0 auto;
@@ -79,10 +79,152 @@
             border-top: 1px solid #DDD8CC;
         }
         footer a { color: #8A968C; }
+
+        /* ── Animated logo ─────────────────────────────────────────── */
+        .app-logo {
+            display: block;
+            margin: 0 auto 20px;
+            overflow: visible;
+            opacity: 0;
+            transform: scale(0.96);
+            transform-origin: center;
+            animation: logo-fade-in 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 0s forwards;
+        }
+
+        .logo-pill {
+            opacity: 0;
+            animation: aukaise-fade 0.12s ease-out 0.3s forwards;
+        }
+
+        .logo-line {
+            stroke-dasharray: 45.7;
+            stroke-dashoffset: 45.7;
+            animation: draw-line 0.25s ease-out 0.3s forwards;
+        }
+
+        .logo-spark {
+            transform-box: fill-box;
+            transform-origin: center;
+            opacity: 0;
+        }
+        .spark-0 { animation: spark-pop 0.12s ease-out 0.42s forwards; }
+        .spark-1 { animation: spark-pop 0.12s ease-out 0.46s forwards; }
+        .spark-2 { animation: spark-pop 0.12s ease-out 0.50s forwards; }
+
+        @keyframes logo-fade-in {
+            from { opacity: 0; transform: scale(0.96); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+        @keyframes aukaise-fade {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        @keyframes draw-line {
+            from { stroke-dashoffset: 45.7; }
+            to   { stroke-dashoffset: 0; }
+        }
+        @keyframes spark-pop {
+            from { opacity: 0; transform: scale(0.3); }
+            to   { opacity: 1; transform: scale(1); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .app-logo  { animation: none; opacity: 1; transform: none; }
+            .logo-pill { animation: none; opacity: 1; }
+            .logo-line { animation: none; stroke-dashoffset: 0; }
+            .logo-spark { animation: none; opacity: 1; transform: none; }
+        }
     </style>
 </head>
 <body>
     <header>
+        <!--
+            Animated document logo — geometry derived from AnimatedLogo.swift.
+            viewBox=102×102 (iconSize). Document 78×99, centered → translate(12,1.5).
+            Colors: accent=#136152, line=#DCE0DE, pillBg=#D4E1DB, paper=white.
+        -->
+        <svg class="app-logo" viewBox="0 0 102 102" width="114" height="114"
+             xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Aukaise-logo">
+            <defs>
+                <filter id="aukaise-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="3" stdDeviation="3"
+                                  flood-color="black" flood-opacity="0.09"/>
+                </filter>
+            </defs>
+
+            <g transform="translate(12, 1.5)">
+                <!-- White paper fill with drop shadow -->
+                <path fill="white" filter="url(#aukaise-shadow)"
+                      d="M10 0 L44 0 L78 31 L78 89 A10 10 0 0 1 68 99 L10 99 A10 10 0 0 1 0 89 L0 10 A10 10 0 0 1 10 0Z"/>
+
+                <!-- Green border + fold triangle (even-odd compound path) -->
+                <path fill="#136152" fill-rule="evenodd"
+                      d="M48.90 2.08 L75.70 30.62
+                         C77.13 32.06 78.02 34.02 78.02 36.18
+                         L78.02 88.90
+                         C78.02 94.52 73.41 99.12 67.79 99.12
+                         L10.24 99.12
+                         C4.61 99.12 0.02 94.52 0.02 88.90
+                         L0.02 10.21
+                         C0.02 4.58 4.62 -0.02 10.24 -0.02
+                         L43.58 -0.02
+                         C45.63 -0.02 47.50 0.77 48.92 2.08 Z
+                         M68.94 29.24 L59.02 29.05
+                         C54.78 28.97 50.57 25.23 50.63 20.97
+                         L50.79 8.42
+                         C50.84 4.88 46.98 1.37 43.70 1.40
+                         L24.22 1.57 L10.22 1.57
+                         C5.11 1.57 1.64 5.49 1.62 10.24
+                         L1.60 88.98
+                         C1.60 94.52 6.06 97.54 10.26 97.54
+                         L67.74 97.54
+                         C71.74 97.54 76.41 93.92 76.41 89.06
+                         L76.41 36.79
+                         C76.41 32.53 73.16 29.33 68.91 29.26 Z"/>
+
+                <!--
+                    Text bars: x=11.4, lineHeight=3.1, lineSpacing=7.5, vTopPad=21.0
+                    Bar y positions: 21.0, 31.6, 42.2, 52.8
+                -->
+                <rect x="11.4" y="21.0" width="30.6" height="3.1" rx="1.55" fill="#DCE0DE"/>
+                <rect x="11.4" y="31.6" width="37.6" height="3.1" rx="1.55" fill="#DCE0DE"/>
+                <rect x="11.4" y="42.2" width="53.1" height="3.1" rx="1.55" fill="#DCE0DE"/>
+                <rect x="11.4" y="52.8" width="45.8" height="3.1" rx="1.55" fill="#DCE0DE"/>
+
+                <!-- Highlight pill background (pillWidth=53, pillHeight=9.9, y=63.4) -->
+                <rect class="logo-pill" x="11.4" y="63.4" width="53.0" height="9.9" rx="3" fill="#D4E1DB"/>
+
+                <!--
+                    Highlight line: hlWidth=45.7, centered in pill (offset 3.65).
+                    x1=15.05, x2=60.75, y=68.35 (pill midY).
+                    Animated via stroke-dasharray/dashoffset.
+                -->
+                <line class="logo-line"
+                      x1="15.05" y1="68.35" x2="60.75" y2="68.35"
+                      stroke="#136152" stroke-width="3.1" stroke-linecap="round"/>
+
+                <!-- Last text bar (y = 63.4 + 9.9 + 7.5 = 80.8) -->
+                <rect x="11.4" y="80.8" width="45.8" height="3.1" rx="1.55" fill="#DCE0DE"/>
+
+                <!--
+                    Spark marks: 3 capsules left of highlight, staggered fade-in.
+                    transform-box: fill-box + transform-origin: center → scale around capsule center.
+                -->
+                <g class="logo-spark spark-0" transform="translate(11.5, 75.3)">
+                    <rect x="-3.5" y="-1.0" width="7.0" height="2.0" rx="1.0"
+                          fill="#136152" transform="rotate(-38)"/>
+                </g>
+                <g class="logo-spark spark-1" transform="translate(12.0, 59.4)">
+                    <rect x="-3.5" y="-1.0" width="7.0" height="2.0" rx="1.0"
+                          fill="#136152" transform="rotate(50)"/>
+                </g>
+                <g class="logo-spark spark-2" transform="translate(8.7, 67.2)">
+                    <rect x="-3.5" y="-1.0" width="7.0" height="2.0" rx="1.0"
+                          fill="#136152" transform="rotate(5)"/>
+                </g>
+            </g>
+        </svg>
+
         <h1>Aukaise</h1>
         <p>Lataa mikä tahansa sopimus tai asiakirja — tekoäly lukee sen puolestasi ja kertoo mitä sinun pitää tietää.</p>
         <a class="badge" href="https://apps.apple.com/fi/app/aukaise/id000000000">
