@@ -93,23 +93,21 @@
 
         .logo-pill {
             opacity: 0;
-            animation: aukaise-fade 0.12s ease-out 0.3s forwards;
+            animation: aukaise-fade 0.12s ease-out 0.3s both;
         }
 
+        /* stroke-dasharray is set as an SVG attribute on the element (guarantees
+           SVG user-unit interpretation). CSS only animates stroke-dashoffset. */
         .logo-line {
-            stroke-dasharray: 45.7;
-            stroke-dashoffset: 45.7;
-            animation: draw-line 0.25s ease-out 0.3s forwards;
+            animation: draw-line 0.25s ease-out 0.3s both;
         }
 
-        .logo-spark {
-            transform-box: fill-box;
-            transform-origin: center;
-            opacity: 0;
-        }
-        .spark-0 { animation: spark-pop 0.12s ease-out 0.42s forwards; }
-        .spark-1 { animation: spark-pop 0.12s ease-out 0.46s forwards; }
-        .spark-2 { animation: spark-pop 0.12s ease-out 0.50s forwards; }
+        /* Sparks: opacity-only animation.
+           CSS `transform` in @keyframes would override the SVG `transform` attribute
+           that positions each spark, moving them to the wrong place. */
+        .spark-0 { opacity: 0; animation: aukaise-fade 0.12s ease-out 0.42s both; }
+        .spark-1 { opacity: 0; animation: aukaise-fade 0.12s ease-out 0.46s both; }
+        .spark-2 { opacity: 0; animation: aukaise-fade 0.12s ease-out 0.50s both; }
 
         @keyframes logo-fade-in {
             from { opacity: 0; transform: scale(0.96); }
@@ -123,16 +121,12 @@
             from { stroke-dashoffset: 45.7; }
             to   { stroke-dashoffset: 0; }
         }
-        @keyframes spark-pop {
-            from { opacity: 0; transform: scale(0.3); }
-            to   { opacity: 1; transform: scale(1); }
-        }
 
         @media (prefers-reduced-motion: reduce) {
             .app-logo  { animation: none; opacity: 1; transform: none; }
             .logo-pill { animation: none; opacity: 1; }
             .logo-line { animation: none; stroke-dashoffset: 0; }
-            .logo-spark { animation: none; opacity: 1; transform: none; }
+            .spark-0, .spark-1, .spark-2 { animation: none; opacity: 1; }
         }
     </style>
 </head>
@@ -197,28 +191,33 @@
                 <!--
                     Highlight line: hlWidth=45.7, centered in pill (offset 3.65).
                     x1=15.05, x2=60.75, y=68.35 (pill midY).
-                    Animated via stroke-dasharray/dashoffset.
+                    stroke-dasharray/dashoffset set as SVG attributes so values are
+                    always interpreted as SVG user units regardless of CSS context.
+                    CSS only animates stroke-dashoffset via @keyframes draw-line.
                 -->
                 <line class="logo-line"
                       x1="15.05" y1="68.35" x2="60.75" y2="68.35"
-                      stroke="#136152" stroke-width="3.1" stroke-linecap="round"/>
+                      stroke="#136152" stroke-width="3.1" stroke-linecap="round"
+                      stroke-dasharray="45.7" stroke-dashoffset="45.7"/>
 
                 <!-- Last text bar (y = 63.4 + 9.9 + 7.5 = 80.8) -->
                 <rect x="11.4" y="80.8" width="45.8" height="3.1" rx="1.55" fill="#DCE0DE"/>
 
                 <!--
-                    Spark marks: 3 capsules left of highlight, staggered fade-in.
-                    transform-box: fill-box + transform-origin: center → scale around capsule center.
+                    Spark marks: 3 capsules, staggered opacity fade-in.
+                    Positions from SwiftUI SparkMarks .position(x:y:) in a 78×99 frame.
+                    No CSS transform used — CSS transform in @keyframes would override
+                    the SVG transform attribute, moving sparks to the wrong position.
                 -->
-                <g class="logo-spark spark-0" transform="translate(11.5, 75.3)">
+                <g class="spark-0" transform="translate(11.5, 75.3)">
                     <rect x="-3.5" y="-1.0" width="7.0" height="2.0" rx="1.0"
                           fill="#136152" transform="rotate(-38)"/>
                 </g>
-                <g class="logo-spark spark-1" transform="translate(12.0, 59.4)">
+                <g class="spark-1" transform="translate(12.0, 59.4)">
                     <rect x="-3.5" y="-1.0" width="7.0" height="2.0" rx="1.0"
                           fill="#136152" transform="rotate(50)"/>
                 </g>
-                <g class="logo-spark spark-2" transform="translate(8.7, 67.2)">
+                <g class="spark-2" transform="translate(8.7, 67.2)">
                     <rect x="-3.5" y="-1.0" width="7.0" height="2.0" rx="1.0"
                           fill="#136152" transform="rotate(5)"/>
                 </g>
